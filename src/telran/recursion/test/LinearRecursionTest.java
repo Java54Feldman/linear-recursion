@@ -30,7 +30,7 @@ class LinearRecursionTest {
 	}
 	@Test
 	void powTest() {
-		assertEquals(100, pow(10, 2));
+		assertEquals(10000, pow(10, 4));
 		assertEquals(100, pow(-10, 2));
 		assertEquals(1000, pow(10, 3));
 		assertEquals(-1000, pow(-10, 3));
