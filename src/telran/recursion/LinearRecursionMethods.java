@@ -37,46 +37,40 @@ public class LinearRecursionMethods {
 	 * only arithmetic operations +, - 
 	 * additional functions if any with the same limitation
 	 */
-	public static int pow(int a, int b) {
-		if (b < 0) {
+	public static int pow(int num, int extent) {
+		if (extent < 0) {
 			throw new IllegalArgumentException();
 		}
-		int res;
-		if (b == 0) {
-			res = 1;
-		} else if (b == 1) {
-			res = a;
-		} else {
-			res = multiply(a, pow(a, b - 1));
+		int res = 1;
+		if (extent > 0) {
+			res = multiply(num, pow(num, extent - 1));
 		}
 		return res;
 	}
-
-	private static int multiply(int x, int y) {
+/**
+ * 
+ * @param a - any number
+ * @param b - any number
+ * @return a * b with the limitations defined in the method pow
+ */
+	private static int multiply(int a, int b) {
 		int res = 0;
-		boolean isNegative = false;
-		if (x == 0 || y == 0) {
-			res = 0;
-		} else {
-			if (x < 0) {
-				x = -x;
-				isNegative = true;
-			}
-			if (y < 0) {
-				y = -y;
-				isNegative = !isNegative;
-			}
-			res = multiplyPositive(x, y);
+		if (b < 0) {
+			//updating sign at both factors doesn't impact a multiplication result
+			a = -a;
+			b = -b;
 		}
-		return isNegative ? -res : res;
-	}
-
-	private static int multiplyPositive(int x, int y) {
-		int res = 0;
-		if (y != 0) {
-			res = x + multiplyPositive(x, y - 1);
-		}
+		res = multiplyNoSignCheck(a, b);
 		return res;
+	}
+/**
+ * 
+ * @param a - any number
+ * @param b - any positive number
+ * @return
+ */
+	private static int multiplyNoSignCheck(int a, int b) {
+		return b == 0 ? 0 : a + multiplyNoSignCheck(a, b - 1);
 	}
 
 	public static void displayArray(int[] array) {
@@ -135,15 +129,12 @@ public class LinearRecursionMethods {
 	 * no static field;
 	 */
 	public static int square(int x) {
-		int sum;
-		if (x > 0) {
-			sum = x + x - 1 + square(-x + 1);
-		} else if (x < 0) {
-			sum = square(-x);
-		} else {
-			sum = 0;
+		//x ^ 2 = (x - 1)^2 + 2x - 1 - recursive formula
+		int res = 0; 
+		if(x != 0) {
+			res = x < 0 ? square(-x) : x + x - 1 + square(x - 1);
 		}
-		return sum;
+		return res;
 	}
 
 	/**
@@ -158,29 +149,25 @@ public class LinearRecursionMethods {
 	 * length()
 	 */
 	public static boolean isSubstring(String str, String substr) {
-		boolean res;
-        if (substr.length() == 0) {
-            res = true; 
-        } else if (str.length() < substr.length()) {
-            res = false; 
-        } else if (compareStrings(str, substr, 0)) {
-            res = true;
-        } else {
-        	res = isSubstring(str.substring(1), substr);
-        }
-        return res;
-    }
 
-    private static boolean compareStrings(String str, String substr, int index) {
-    	boolean res;
-        if (index == substr.length()) {
-            res = true; 
-        } else if (str.charAt(index) != substr.charAt(index)) {
-            res = false; 
-        } else {
-        	res = compareStrings(str, substr, index + 1);
-        }
-        return res;
-    }
+		boolean res = false;
+		if (str.length() >= substr.length()) {
+			res = isSubstringAtFirstPart(str, substr) ? 
+					true : isSubstring(str.substring(1), substr);
+		} 
 
+		return res;
+
+	}
+
+	private static boolean isSubstringAtFirstPart(String str, String substr) {
+		boolean res = false;
+		if (substr.length() == 0) {
+			res = true;
+		} else if (str.charAt(0) == substr.charAt(0)) {
+			res = isSubstringAtFirstPart(str.substring(1), substr.substring(1));
+		}
+		
+		return res;
+	}
 }
